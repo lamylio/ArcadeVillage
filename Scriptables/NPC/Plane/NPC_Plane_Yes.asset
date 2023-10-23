@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912b0ef39f556a84cba4504a6282fdca, type: 3}
+  m_Name: NPC_Plane_Yes
+  m_EditorClassIdentifier: 
+  npcName: Simon
+  dialogues:
+  - text: Nice, I knew you would! Let's play a game.
+    action: 0
+    nextScriptable: {fileID: 0}
+  - text: Show me that you're a genius pilot by winning a race against the clock.
+    action: 0
+    nextScriptable: {fileID: 0}
+  - text: You'll need to go through 10 rings in less than a minute.
+    action: 0
+    nextScriptable: {fileID: 0}
+  - text: 'Oh btw, u wanna know the controls and how the plane works? '
+    action: 2
+    nextScriptable: {fileID: 11400000, guid: c8902685d9bf2e8479cceeafa19182a2, type: 2}
+  - text: Ok let's go babyyyy!
+    action: 3
+    nextScriptable: {fileID: 0}
