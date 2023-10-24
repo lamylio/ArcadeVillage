@@ -8,4 +8,6 @@ public class SFXScriptable : ScriptableObject
     public float volume = 1;
     public float minPitch = 1;
     public float maxPitch = 1;
+
+    public bool loop = false;
 }

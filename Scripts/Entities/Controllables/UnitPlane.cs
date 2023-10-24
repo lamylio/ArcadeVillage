@@ -12,12 +12,13 @@ public class UnitPlane : MonoBehaviour
     // --- References ---
     [SerializeField, Header("References")] private Rigidbody _rigidbody;
     [SerializeField] private GameObject _camera, _propeller, _rearWheel;
+    [SerializeField] private SFXScriptable _sfxEngineRunningScriptable;
 
     // --- Settings ---
     [SerializeField, Header("Settings")]    
     private float _maxSpeed = 150f;
     [SerializeField]
-    private float _pitchMultipler = 1f, _yawMultipler = 1f, _rollMultipler = 1f, _liftMultipler = 10f, _thrustDecreaseRatio = 0.09f;
+    private float _pitchMultipler = 1f, _yawMultipler = 1f, _rollMultipler = 1f, _liftMultipler = 10f, _thrustDecreaseRatio = 0.09f, _thrustIncreaseRatio = 0.002f;
 
 
     // --- Inputs ---
@@ -29,7 +30,7 @@ public class UnitPlane : MonoBehaviour
 
     // --- Calculated values ---
     private float _maxThrust => _maxSpeed / 100f;
-    private float _thrustDelta => _maxThrust / 1000f;
+    private float _thrustDelta => _maxThrust * _thrustIncreaseRatio;
     private float _speed => _speedkph / 100f;
     
     void Awake(){
@@ -64,12 +65,16 @@ public class UnitPlane : MonoBehaviour
 
     void FixedUpdate(){
 
+        if (!_inputs.Plane.Flight.enabled) return;
+
         /* 
-        <Note> 
+        <note> 
             I could have use the .AddForce and Torque functions, 
             but then the controlls seems kinda weird and less reactive to the user inputs.
             So I decided to use the .Translate and .Rotate functions instead.
-        </Note>
+
+            Please excuse me for the bad simulation of the physics and controls, lol.
+        </note>
         */
 
         float pitchTorque = _pitch * _pitchMultipler;
@@ -81,6 +86,7 @@ public class UnitPlane : MonoBehaviour
         _rigidbody.transform.Translate(Vector3.forward * forwardForce);
         _rigidbody.transform.Translate(Vector3.up * _liftMultipler * _speed * Time.deltaTime);
         _rigidbody.transform.Translate(Vector3.down * 9.81f * Time.deltaTime, Space.World);
+        // _rigidbody.AddForce(Vector3.down * 9.81f * Time.deltaTime, ForceMode.Acceleration);
         if (!_throttle) _rigidbody.transform.Translate(Vector3.forward * _speed * 0.999f * Time.deltaTime);
         
         // Torque
@@ -91,9 +97,14 @@ public class UnitPlane : MonoBehaviour
 
         // Propeller animation
         _propeller.transform.Rotate(Vector3.forward, Time.deltaTime * _speedkph * 100f);
-
-        // Rotate the rear wheel with a maximum of -30 and +30
+        // Wheel animation (deprecated)
         // _rearWheel.transform.localRotation = Quaternion.Euler(0, _yaw * 30f, 0); 
+
+
+        // Sound based on speed
+        float pitchRange = (_sfxEngineRunningScriptable.maxPitch - _sfxEngineRunningScriptable.minPitch);
+        float pitch = _thrust * pitchRange +  _sfxEngineRunningScriptable.minPitch;
+        AudioManager.Instance.ChangeSFXSpeed(pitch);
     }
 
     void onFlightInputs(InputAction.CallbackContext context){
@@ -106,13 +117,20 @@ public class UnitPlane : MonoBehaviour
 
     void onGameStateChanged(State newState){
         if (newState.Is("PlaneRace")){
-            GameManager.Instance.Player.gameObject.SetActive(false);
+            if (GameManager.Instance.Player != null) GameManager.Instance.Player.gameObject.SetActive(false);
             _inputs.Enable();
             _camera.SetActive(true);
+            _rigidbody.constraints = RigidbodyConstraints.None;
+            AudioManager.Instance.SetSFXLoop(true);
+            AudioManager.Instance.PlaySoundCancelling(_sfxEngineRunningScriptable.sound, 0.5f);
         } else {
             _inputs.Disable();
-            // _camera.SetActive(false);
+            AudioManager.Instance.StopSound();
             if (GameManager.Instance.Player != null) GameManager.Instance.Player.gameObject.SetActive(true);
+            _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            _rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
+            AudioManager.Instance.SetSFXLoop(false);
+            AudioManager.Instance.ChangeSFXSpeed(1f);
         }
     }
 
@@ -121,6 +139,7 @@ public class UnitPlane : MonoBehaviour
         while(true){
             yield return new WaitForFixedUpdate();
             _speedkph = (transform.position - previousPosition).magnitude * 100f;
+            _speedkph = Mathf.Clamp(_speedkph, 0f, _maxSpeed);
             previousPosition = transform.position;
         }
     }

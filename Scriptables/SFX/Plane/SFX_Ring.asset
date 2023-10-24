@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f915a7e6886ad649ab0a4df768c8ce9, type: 3}
-  m_Name: Floor_Sand
+  m_Name: SFX_Ring
   m_EditorClassIdentifier: 
-  sound: {fileID: 8300000, guid: 826b5ab8735d6ff4c9e018ef29045829, type: 3}
-  volume: 0.3
-  minPitch: 1
-  maxPitch: 1.3
+  sound: {fileID: 8300000, guid: 35ce408210dfa9843ba14da86f8efb4e, type: 3}
+  volume: 1
+  minPitch: 5
+  maxPitch: 5
+  loop: 0

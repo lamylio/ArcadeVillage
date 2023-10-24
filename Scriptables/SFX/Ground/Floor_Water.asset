@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f915a7e6886ad649ab0a4df768c8ce9, type: 3}
-  m_Name: SFX_Fire_Damage
+  m_Name: Floor_Water
   m_EditorClassIdentifier: 
-  sound: {fileID: 8300000, guid: 05c42e498b8744744ad3fbf2055f3624, type: 3}
+  sound: {fileID: 8300000, guid: b682207ff9ac8db4695704cd57fb59a7, type: 3}
   volume: 0.8
-  minPitch: 1.2
-  maxPitch: 1.2
+  minPitch: 1.3
+  maxPitch: 1.8
   loop: 0

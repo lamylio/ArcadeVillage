@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f915a7e6886ad649ab0a4df768c8ce9, type: 3}
-  m_Name: Floor_Wood
+  m_Name: SFX_Victory
   m_EditorClassIdentifier: 
-  sound: {fileID: 8300000, guid: cee4ef3ef0fd155409f7b5a5162cece8, type: 3}
-  volume: 0.35
-  minPitch: 0.9
-  maxPitch: 1.3
+  sound: {fileID: 8300000, guid: 4dbfbd1a56081db4ca174255a4d56b1f, type: 3}
+  volume: 1
+  minPitch: 1
+  maxPitch: 1
+  loop: 0

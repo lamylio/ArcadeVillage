@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f915a7e6886ad649ab0a4df768c8ce9, type: 3}
-  m_Name: Ground_Yard
+  m_Name: SFX_Plane
   m_EditorClassIdentifier: 
-  sound: {fileID: 8300000, guid: 2c37f11b2d56b374ebf354853c6ad643, type: 3}
-  volume: 0.3
-  minPitch: 0.9
-  maxPitch: 1.3
+  sound: {fileID: 8300000, guid: bb4547b12a2dc5544bc90a0d6cfed265, type: 3}
+  volume: 1
+  minPitch: 0.8
+  maxPitch: 1.5
+  loop: 1

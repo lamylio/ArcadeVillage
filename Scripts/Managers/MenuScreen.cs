@@ -22,9 +22,8 @@ public class MainMenu : MonoBehaviour
     private bool hasStarted = false;
 
     void Awake(){
-        _animator = GetComponent<Animator>();
-        _introductionCutScene = transform.GetChild(0).gameObject;
-        _introductionUI = transform.GetChild(1).gameObject;
+        // TODO: THIS HAS BEEN DELETED. REDO. 
+        // _animator = GetComponent<Animator>();
     }
 
     void Start()
@@ -35,8 +34,6 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        // Check if the player press space or click on the screen
-        // If so, play the animation, then switch scene
         if (hasStarted) return;
         if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)){
             StartCoroutine(SwitchToNextScene());
@@ -47,15 +44,20 @@ public class MainMenu : MonoBehaviour
     // ===================================================================
 
     async void BlinkPressKeyText(){
-        // Activate and deactivate the text
         if (_pressAnywhereText == null) return;
         _pressAnywhereText?.gameObject.SetActive(false);  
         await Task.Delay(500);
         _pressAnywhereText?.gameObject.SetActive(true);
     }
 
+    /* 
+    <note>
+        In the start, I used two separate scenes, but I decided to merge them into one in the end. 
+        I haven't refactored the function name. 
+    </note> 
+    */
     IEnumerator SwitchToNextScene(){
-        _animator.SetTrigger("FadeIn");
+        // _animator.SetTrigger("FadeIn");
         AudioManager.Instance.SendMusicToBackground();
         yield return new WaitForSeconds(1.5f);
 

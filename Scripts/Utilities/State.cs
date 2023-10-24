@@ -2,16 +2,11 @@
 public class State {
 
     public string Name;
-    private string _nextState;
-    public string NextState {
-        get {
-            return _nextState;
-        }
-    }
-
+    public string NextState;
+    
     public State(string name, string nextState = "FreeWalkPlayer"){
         Name = name;
-        _nextState = nextState;
+        NextState = nextState;
     }
 
     public bool Is(string stateName){

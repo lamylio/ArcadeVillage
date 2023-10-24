@@ -8,7 +8,15 @@ public class NPCPlane : NPCSpeaking {
     [SerializeField]
     private Transform _playerRespawnPoint;
 
+    [SerializeField] private SFXScriptable _sfxStrangeScriptable;
+
     // ------------------------------
+
+    override protected void EnterDialogue(){
+        base.EnterDialogue();
+        AudioManager.Instance.PlaySound(_sfxStrangeScriptable.sound, _sfxStrangeScriptable.volume, _sfxStrangeScriptable.minPitch);
+        GameManager.Instance.Player.transform.LookAt(transform.position);
+    }
 
     override protected IEnumerator handleAction(NPCScriptable.Dialogue dialogue){
         currentStatus = NPCStatus.HandlingAction;
@@ -18,17 +26,12 @@ public class NPCPlane : NPCSpeaking {
         {
             
             case NPCScriptable.Action.ControlThePlane: 
-                if (action == NPCScriptable.Action.ControlThePlane) {
-                    GameManager.Instance.SwitchGameState("PlaneRace");
-                    GameManager.Instance.Player.transform.position = GameManager.Instance.centerOfMap.position;
-                    GameManager.Instance.Player.transform.LookAt(transform.position);
-                }
+                GameManager.Instance.SwitchGameState("PlaneRace");
+                yield return new WaitForSeconds(1f);
+                GameManager.Instance.Player.transform.position = GameManager.Instance.centerOfMap.position;
+                // GameManager.Instance.Player.transform.LookAt(transform.position); 
+                GameManager.Instance.dialogueText.text = "";
                 break;
-            case NPCScriptable.Action.EndDialogue: 
-                yield return StartCoroutine(base.EndDialogue());
-                yield return new WaitForSeconds(5f); base.Reset();
-                break;
-
             default: yield return base.handleAction(dialogue); break;
         }
     }

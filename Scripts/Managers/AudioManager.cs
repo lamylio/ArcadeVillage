@@ -16,10 +16,6 @@ public class AudioManager : MonoBehaviour
         if (_musicSource == null) _musicSource = gameObject.AddComponent<AudioSource>();
         if (_sfxSource == null) _sfxSource = gameObject.AddComponent<AudioSource>();
     }
-
-    // void OnApplicationQuit(){
-    //     Instance = null;
-    // }
     
     // ===================================================================
 
@@ -38,27 +34,25 @@ public class AudioManager : MonoBehaviour
         _musicSource.Pause();
     }
 
-    public void PlaySound(AudioClip clip, float volume = 1){
-        _sfxSource.pitch = 1;
+    public void PlaySound(AudioClip clip, float volume = 1, float pitch=1){
+        _sfxSource.pitch = pitch;
         _sfxSource.PlayOneShot(clip, volume);
-        // Invoke("sfxFinished", clip.length);
     }
 
-    public void PlaySoundCancelling(AudioClip clip, float volume = 1){
+    public void PlaySoundCancelling(AudioClip clip, float volume = 1, float pitch = 1){
         _sfxSource.Stop();
         _sfxSource.clip = clip;
+        _sfxSource.pitch = pitch;
         _sfxSource.volume = volume;
         _sfxSource.Play();
         _sfxSource.volume = 1;
     }
 
     public void PlayLocalizedSound(AudioClip clip, Vector3 position, float volume = 1, float pitch = 1){
-        // AudioSource.PlayClipAtPoint(clip, position, volume);
         if (_sfxSource.isPlaying) return;
         _sfxSource.pitch = pitch;
         _sfxSource.transform.position = position;
         _sfxSource.PlayOneShot(clip, volume);
-        // _sfxSource.pitch = 1;
     }
 
     public void StopSound(){
@@ -66,6 +60,10 @@ public class AudioManager : MonoBehaviour
     }
 
     // ===================================================================
+
+    public void SetSFXLoop(bool loop){
+        _sfxSource.loop = loop;
+    }
 
     public void SetMusicVolume(float volume){
         _musicSource.volume = volume;
@@ -84,6 +82,10 @@ public class AudioManager : MonoBehaviour
 
     public void ChangeMusicSpeed(float speed){
         _musicSource.pitch = speed;
+    }
+
+    public void ChangeSFXSpeed(float speed){
+        _sfxSource.pitch = speed;
     }
 
 }

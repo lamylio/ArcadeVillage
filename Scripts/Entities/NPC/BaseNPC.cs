@@ -55,6 +55,7 @@ public class BaseNPC : MonoBehaviour {
                 yield break;
 
             case NPCScriptable.Action.EndDialogue: 
+                GameManager.Instance.NextGameState();
                 yield return StartCoroutine(EndDialogue());
                 yield return new WaitForSeconds(5f);
                 Reset();
@@ -140,7 +141,7 @@ public class BaseNPC : MonoBehaviour {
     protected IEnumerator EndDialogue(){
         currentStatus = NPCStatus.Looking;
         AudioManager.Instance.StopSound();
-        GameManager.Instance.NextGameState();
+        // GameManager.Instance.NextGameState();
         yield return new WaitForSeconds(2.5f);
         GameManager.Instance.dialogueText.text = "";
     }
