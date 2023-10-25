@@ -19,7 +19,7 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private AudioClip _menuMusic; 
 
-    private bool hasStarted = false;
+    private bool _hasStarted = false;
 
     void Awake(){
         // TODO: THIS HAS BEEN DELETED. REDO. 
@@ -29,15 +29,15 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         InvokeRepeating("BlinkPressKeyText", 0.5f, 1.5f);
-        AudioManager.Instance.PlayMusic(_menuMusic);
+        AudioManager.Instance.playMusic(_menuMusic);
     }
 
     void Update()
     {
-        if (hasStarted) return;
+        if (_hasStarted) return;
         if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)){
             StartCoroutine(SwitchToNextScene());
-            hasStarted = true;
+            _hasStarted = true;
         }
     }
 
@@ -58,10 +58,10 @@ public class MainMenu : MonoBehaviour
     */
     IEnumerator SwitchToNextScene(){
         // _animator.SetTrigger("FadeIn");
-        AudioManager.Instance.SendMusicToBackground();
+        AudioManager.Instance.sendMusicToBackground();
         yield return new WaitForSeconds(1.5f);
 
-        GameManager.Instance.NextGameState();
+        GameManager.Instance.nextGameState();
         _introductionCutScene.GetComponent<PlayableDirector>().Play();
         _introductionUI.SetActive(false);
     }

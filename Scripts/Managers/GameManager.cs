@@ -18,13 +18,11 @@ public class GameManager : MonoBehaviour
     /* 
     <note> 
         Ok, lets be honest, I could have used an enum here, but I wanted to try something different
-        in order to learn more about Objects and List in C#.
+        in order to learn more about Objects and Lists in C#.
     </note> */
     [SerializeField] private List<State> _states = new List<State>(){
         new State("MenuScreen", "BoatCutScene"),
         new State("BoatCutScene"),
-        new State("WelcomeCutScene"),
-        new State("SpawnRing", "PlaneRace"),
         new State("PlaneRace"),
         new State("Dialogue"),
         new State("FreeWalkPlayer")
@@ -32,6 +30,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string _initialState;
      
+    /* ----- Accessible properties ----- */
+
     public State CurrentGameState;
     
     private GameObject _player;
@@ -44,9 +44,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public TextMeshProUGUI dialogueText;
-
-    public Transform centerOfMap;
+    public TextMeshProUGUI DialogueText;
+    public Transform CenterOfMap;
 
     /* 
     <note> 
@@ -55,6 +54,9 @@ public class GameManager : MonoBehaviour
     </note> */
     public static event System.Action<State> OnGameStateChanged;
 
+
+    /* ----- Monobehaviour functions ----- */
+
     void Awake(){
         if (Instance != null) Destroy(gameObject); 
         DontDestroyOnLoad(gameObject);
@@ -62,25 +64,25 @@ public class GameManager : MonoBehaviour
     }
 
     void Start(){
-        if (_initialState != null) SwitchGameState(_initialState);
-        else SwitchGameState(_states[0]);
+        if (_initialState != null) switchGameState(_initialState);
+        else switchGameState(_states[0]);
     }
 
-    // ===================================================================
+    /* ----- Custom functions ----- */
 
-    public void NextGameState(){
+    public void nextGameState(){
         CurrentGameState = _states.Find(state => state.Is(CurrentGameState.NextState));
         OnGameStateChanged?.Invoke(CurrentGameState);
         Debug.LogWarning("<color=yellow>Switching to " + CurrentGameState.Name + "</color>");
     }
-    public void SwitchGameState(State newState){
+    public void switchGameState(State newState){
         CurrentGameState = newState;
         OnGameStateChanged?.Invoke(CurrentGameState);
         Debug.LogWarning("<color=orange>Switching to " + CurrentGameState.Name + "</color>");
     }
 
-    public void SwitchGameState(string newStateName){
+    public void switchGameState(string newStateName){
         State newState = _states.Find(state => state.Is(newStateName))  ;
-        SwitchGameState(newState);
+        switchGameState(newState);
     }
 }

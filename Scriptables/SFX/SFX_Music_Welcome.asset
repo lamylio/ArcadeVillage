@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 912b0ef39f556a84cba4504a6282fdca, type: 3}
-  m_Name: NPC_Welcome_Yes
+  m_Script: {fileID: 11500000, guid: 2f915a7e6886ad649ab0a4df768c8ce9, type: 3}
+  m_Name: SFX_Music_Welcome
   m_EditorClassIdentifier: 
-  npcName: Miller
-  dialogues:
-  - text: Yes? That's what we'll see.  Have fun and see you around !
-    action: 1
-    nextScriptable: {fileID: 0}
+  sound: {fileID: 8300000, guid: c6c5cd0ee2d7db447be3ac0e13978c23, type: 3}
+  volume: 1
+  minPitch: 1
+  maxPitch: 1
+  loop: 1

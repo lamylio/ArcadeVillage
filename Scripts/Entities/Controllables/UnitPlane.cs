@@ -13,6 +13,8 @@ public class UnitPlane : MonoBehaviour
     [SerializeField, Header("References")] private Rigidbody _rigidbody;
     [SerializeField] private GameObject _camera, _propeller, _rearWheel;
     [SerializeField] private SFXScriptable _sfxEngineRunningScriptable;
+    
+    [SerializeField] private Transform _ring;
 
     // --- Settings ---
     [SerializeField, Header("Settings")]    
@@ -32,10 +34,19 @@ public class UnitPlane : MonoBehaviour
     private float _maxThrust => _maxSpeed / 100f;
     private float _thrustDelta => _maxThrust * _thrustIncreaseRatio;
     private float _speed => _speedkph / 100f;
-    
+
+    // --- Others ---
+    private LineRenderer _lineRenderer;
+    private int _numSegments = 5;
+
+
+    /* ------ Monobehaviour functions ------ */
+   
     void Awake(){
         _inputs = new PlayerInputs();
         _rigidbody = GetComponent<Rigidbody>();
+        _lineRenderer = GetComponent<LineRenderer>();
+        _lineRenderer.positionCount = _numSegments + 1;
 
         GameManager.OnGameStateChanged += onGameStateChanged;
     }
@@ -55,7 +66,7 @@ public class UnitPlane : MonoBehaviour
         };
 
         // TODO: Brake system
-        StartCoroutine(CalculateSpeed()); 
+        StartCoroutine(calculateSpeed()); 
     }
 
     void Update(){
@@ -86,7 +97,6 @@ public class UnitPlane : MonoBehaviour
         _rigidbody.transform.Translate(Vector3.forward * forwardForce);
         _rigidbody.transform.Translate(Vector3.up * _liftMultipler * _speed * Time.deltaTime);
         _rigidbody.transform.Translate(Vector3.down * 9.81f * Time.deltaTime, Space.World);
-        // _rigidbody.AddForce(Vector3.down * 9.81f * Time.deltaTime, ForceMode.Acceleration);
         if (!_throttle) _rigidbody.transform.Translate(Vector3.forward * _speed * 0.999f * Time.deltaTime);
         
         // Torque
@@ -97,15 +107,19 @@ public class UnitPlane : MonoBehaviour
 
         // Propeller animation
         _propeller.transform.Rotate(Vector3.forward, Time.deltaTime * _speedkph * 100f);
+
         // Wheel animation (deprecated)
         // _rearWheel.transform.localRotation = Quaternion.Euler(0, _yaw * 30f, 0); 
-
 
         // Sound based on speed
         float pitchRange = (_sfxEngineRunningScriptable.maxPitch - _sfxEngineRunningScriptable.minPitch);
         float pitch = _thrust * pitchRange +  _sfxEngineRunningScriptable.minPitch;
-        AudioManager.Instance.ChangeSFXSpeed(pitch);
+        AudioManager.Instance.changeSFXSpeed(pitch);
+
+        drawProjection();
     }
+
+    /* ----- Others functions ----- */
 
     void onFlightInputs(InputAction.CallbackContext context){
         Vector3 movementInput = context.ReadValue<Vector3>();
@@ -120,21 +134,23 @@ public class UnitPlane : MonoBehaviour
             if (GameManager.Instance.Player != null) GameManager.Instance.Player.gameObject.SetActive(false);
             _inputs.Enable();
             _camera.SetActive(true);
+            _lineRenderer.enabled = true;
             _rigidbody.constraints = RigidbodyConstraints.None;
-            AudioManager.Instance.SetSFXLoop(true);
-            AudioManager.Instance.PlaySoundCancelling(_sfxEngineRunningScriptable.sound, 0.5f);
+            AudioManager.Instance.setSFXLoop(true);
+            AudioManager.Instance.playSoundCancelling(_sfxEngineRunningScriptable.sound, 0.5f);
         } else {
             _inputs.Disable();
-            AudioManager.Instance.StopSound();
+            _lineRenderer.enabled = false;
+            AudioManager.Instance.stopSound();
+            AudioManager.Instance.setSFXLoop(false);
+            AudioManager.Instance.changeSFXSpeed(1f);
             if (GameManager.Instance.Player != null) GameManager.Instance.Player.gameObject.SetActive(true);
             _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
             _rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
-            AudioManager.Instance.SetSFXLoop(false);
-            AudioManager.Instance.ChangeSFXSpeed(1f);
         }
     }
 
-    IEnumerator CalculateSpeed(){
+    IEnumerator calculateSpeed(){
         Vector3 previousPosition = transform.position;
         while(true){
             yield return new WaitForFixedUpdate();
@@ -144,5 +160,19 @@ public class UnitPlane : MonoBehaviour
         }
     }
 
+    void drawProjection(){
+        Vector3[] points = new Vector3[_numSegments + 1];
+        Vector3 direction = _ring.position - _propeller.transform.position;
+        
+        // Calculate control points for the Bezier curve
+        for (int i = 0; i <= _numSegments; i++){
+            float t = i / (float) _numSegments;
+            Vector3 midPoint = Vector3.Lerp(_propeller.transform.position, _ring.position, t);
+            Vector3 perpendicularDirection = Vector3.Cross(direction, Vector3.up).normalized;
+            Vector3 controlPoint = midPoint + perpendicularDirection * Mathf.Sin(t * Mathf.PI) * 2f; // Adjust the multiplier for curve smoothness
+            points[i] = controlPoint;
+        }
+        _lineRenderer.SetPositions(points);
+    }
 
 }

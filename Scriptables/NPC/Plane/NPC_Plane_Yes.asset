@@ -17,10 +17,12 @@ MonoBehaviour:
   - text: Nice, I knew you would! Let's play a game.
     action: 0
     nextScriptable: {fileID: 0}
-  - text: Show me that you're a genius pilot by winning a race against the clock.
+  - text: Show me that you're a genius pilot by winning <color=white>a race against
+      the clock</color>.
     action: 0
     nextScriptable: {fileID: 0}
-  - text: You'll need to go through 10 rings in less than a minute.
+  - text: You'll need to go through <color=white>10 rings</color> in less than a
+      minute.
     action: 0
     nextScriptable: {fileID: 0}
   - text: 'Oh btw, u wanna know the controls and how the plane works? '

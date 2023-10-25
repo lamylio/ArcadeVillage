@@ -17,12 +17,15 @@ MonoBehaviour:
   - text: Hello there! Welcome to Arcade Village!
     action: 0
     nextScriptable: {fileID: 0}
-  - text: Here, the villagers love betting. So be ready.
+  - text: This is a small village with few, but nice people.
     action: 0
     nextScriptable: {fileID: 0}
-  - text: Are you ready ?
+  - text: Oh by the way, the villagers love betting. So be ready.
+    action: 0
+    nextScriptable: {fileID: 0}
+  - text: 'Are you ready ? '
     action: 2
     nextScriptable: {fileID: 11400000, guid: 18559615cfe2e2f4da4f767114110ad6, type: 2}
-  - text: Good luck then, lmao.
+  - text: No? Good luck then!  Have fun and see you around !
     action: 1
     nextScriptable: {fileID: 0}

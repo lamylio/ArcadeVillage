@@ -5,16 +5,15 @@ using UnityEngine.AI;
 
 public class NPCPlane : NPCSpeaking {
 
-    [SerializeField]
-    private Transform _playerRespawnPoint;
+    [SerializeField] private Transform _playerRespawnPoint;
 
     [SerializeField] private SFXScriptable _sfxStrangeScriptable;
 
     // ------------------------------
 
-    override protected void EnterDialogue(){
-        base.EnterDialogue();
-        AudioManager.Instance.PlaySound(_sfxStrangeScriptable.sound, _sfxStrangeScriptable.volume, _sfxStrangeScriptable.minPitch);
+    override protected void enterDialogue(){
+        base.enterDialogue();
+        AudioManager.Instance.playSound(_sfxStrangeScriptable.sound, _sfxStrangeScriptable.volume, _sfxStrangeScriptable.minPitch);
         GameManager.Instance.Player.transform.LookAt(transform.position);
     }
 
@@ -26,11 +25,13 @@ public class NPCPlane : NPCSpeaking {
         {
             
             case NPCScriptable.Action.ControlThePlane: 
-                GameManager.Instance.SwitchGameState("PlaneRace");
+                GameManager.Instance.switchGameState("PlaneRace");
                 yield return new WaitForSeconds(1f);
-                GameManager.Instance.Player.transform.position = GameManager.Instance.centerOfMap.position;
-                // GameManager.Instance.Player.transform.LookAt(transform.position); 
-                GameManager.Instance.dialogueText.text = "";
+                GameManager.Instance.Player.transform.position = GameManager.Instance.CenterOfMap.position; 
+                yield return new WaitForSeconds(1f);
+                GameManager.Instance.DialogueText.text = "";
+                yield return new WaitForSeconds(10f);
+                base.Reset();
                 break;
             default: yield return base.handleAction(dialogue); break;
         }

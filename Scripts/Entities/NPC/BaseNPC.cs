@@ -21,7 +21,7 @@ public class BaseNPC : MonoBehaviour {
     /* References */
 
     [SerializeField] protected NPCScriptable npcScriptable;
-    [SerializeField] protected GameObject _trigger;
+    [SerializeField] protected GameObject trigger;
     private NPCScriptable _defaultScriptable;
 
     /* Properties */
@@ -55,7 +55,7 @@ public class BaseNPC : MonoBehaviour {
                 yield break;
 
             case NPCScriptable.Action.EndDialogue: 
-                GameManager.Instance.NextGameState();
+                GameManager.Instance.nextGameState();
                 yield return StartCoroutine(EndDialogue());
                 yield return new WaitForSeconds(5f);
                 Reset();
@@ -65,21 +65,20 @@ public class BaseNPC : MonoBehaviour {
         }
     }
 
-    /* ============================== */
+    /* ------ Monobehaviour functions ------ */
     
     void Awake(){
         currentStatus = NPCStatus.Idle;
         _defaultScriptable = npcScriptable; // Keep the original one in memory
     }
 
-    /* Trigger */
     void OnTriggerEnter(Collider other){
         if (other.CompareTag("Player") && currentStatus != NPCStatus.Inactive){
-            EnterDialogue();
+            enterDialogue();
         }
     }
 
-    /* Dialogues */
+    /* ------ Dialogues ------ */
 
     protected IEnumerator DisplayNextDialogue(NPCScriptable scriptable){
         if (currentDialogue >= scriptable.dialogues.Length) yield return null;
@@ -94,7 +93,7 @@ public class BaseNPC : MonoBehaviour {
         else if (dialogue.action == NPCScriptable.Action.AskYesNo) inputHighlight = inputHighlight.Replace("%INPUT%", "Y/N");
         else inputHighlight = "";
 
-        GameManager.Instance.dialogueText.text = $"[{npcScriptable.npcName}] {dialogue.text} {inputHighlight}";
+        GameManager.Instance.DialogueText.text = $"[{npcScriptable.npcName}] {dialogue.text} {inputHighlight}";
         Debug.Log($"[{npcScriptable.npcName}] >> {dialogue.text} ({dialogue.action})");
 
         // Handle the action
@@ -124,29 +123,28 @@ public class BaseNPC : MonoBehaviour {
     }
 
     
-    protected virtual void EnterDialogue(){
-        GameManager.Instance.SwitchGameState("Dialogue");
-        _trigger.SetActive(false);
+    protected virtual void enterDialogue(){
+        GameManager.Instance.switchGameState("Dialogue");
+        trigger.SetActive(false);
         LookAtPlayer();
         currentStatus = NPCStatus.Talking;
     }
     
     protected virtual void Reset(){
-        Debug.Log("Resetting NPC");
         currentDialogue = 0;
         npcScriptable = _defaultScriptable;
-        _trigger.gameObject.SetActive(true);
+        trigger.gameObject.SetActive(true);
     }
 
     protected IEnumerator EndDialogue(){
         currentStatus = NPCStatus.Looking;
-        AudioManager.Instance.StopSound();
-        // GameManager.Instance.NextGameState();
+        AudioManager.Instance.stopSound();
         yield return new WaitForSeconds(2.5f);
-        GameManager.Instance.dialogueText.text = "";
+        GameManager.Instance.DialogueText.text = "";
+        /* <note> Leave the final status up to the handleAction function of the childs </note> */
     }
 
-    /* Others functions */
+    /* ------ Others functions ------ */
 
     protected void LookAtPlayer(){
         // TODO: Make the head move, not the whole body (body must follow if head too much to the side)

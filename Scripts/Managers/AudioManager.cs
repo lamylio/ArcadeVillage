@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 
+    This class is a singleton that handles all the audio in the game.
+    It has two audio sources, one for music and one for sound effects.
+
+    Remark: this script is real bad, sorry lol
+ */
+
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
@@ -19,27 +26,27 @@ public class AudioManager : MonoBehaviour
     
     // ===================================================================
 
-    public void PlayMusic(AudioClip clip = null){
+    public void playMusic(AudioClip clip = null){
         if (clip){
             _musicSource.clip = clip;
         }
         _musicSource.Play();
     }
 
-    public void StopMusic(){
+    public void stopMusic(){
         _musicSource.Stop();
     }
 
-    public void PauseMusic(){
+    public void pauseMusic(){
         _musicSource.Pause();
     }
 
-    public void PlaySound(AudioClip clip, float volume = 1, float pitch=1){
+    public void playSound(AudioClip clip, float volume = 1, float pitch=1){
         _sfxSource.pitch = pitch;
         _sfxSource.PlayOneShot(clip, volume);
     }
 
-    public void PlaySoundCancelling(AudioClip clip, float volume = 1, float pitch = 1){
+    public void playSoundCancelling(AudioClip clip, float volume = 1, float pitch = 1){
         _sfxSource.Stop();
         _sfxSource.clip = clip;
         _sfxSource.pitch = pitch;
@@ -48,43 +55,43 @@ public class AudioManager : MonoBehaviour
         _sfxSource.volume = 1;
     }
 
-    public void PlayLocalizedSound(AudioClip clip, Vector3 position, float volume = 1, float pitch = 1){
+    public void playLocalizedSound(AudioClip clip, Vector3 position, float volume = 1, float pitch = 1){
         if (_sfxSource.isPlaying) return;
         _sfxSource.pitch = pitch;
         _sfxSource.transform.position = position;
         _sfxSource.PlayOneShot(clip, volume);
     }
 
-    public void StopSound(){
+    public void stopSound(){
         _sfxSource.Stop();
     }
 
     // ===================================================================
 
-    public void SetSFXLoop(bool loop){
+    public void setSFXLoop(bool loop){
         _sfxSource.loop = loop;
     }
 
-    public void SetMusicVolume(float volume){
+    public void setMusicVolume(float volume){
         _musicSource.volume = volume;
     }
-    public void SendMusicToBackground(){
+    public void sendMusicToBackground(){
         _musicSource.volume = 0.15f;
     }
-    public void SendMusicToFront(){
+    public void sendMusicToFront(){
         _musicSource.volume = 0.5f;
     }
 
-    public void MuteMusicForTime(float time){
+    public void muteMusicForTime(float time){
         _musicSource.volume = 0f;
-        Invoke("SendMusicToBackground", time);
+        Invoke("sendMusicToBackground", time);
     }
 
-    public void ChangeMusicSpeed(float speed){
+    public void changeMusicSpeed(float speed){
         _musicSource.pitch = speed;
     }
 
-    public void ChangeSFXSpeed(float speed){
+    public void changeSFXSpeed(float speed){
         _sfxSource.pitch = speed;
     }
 

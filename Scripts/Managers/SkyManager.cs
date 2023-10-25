@@ -32,15 +32,21 @@ public class SkyManager : MonoBehaviour
     private MeshRenderer _skyboxRenderer;
     public float currentRatio => (float) _currentDateTime.TimeOfDay.TotalSeconds / SECONDS_IN_DAY;
 
-    void Start()
-    {
+    private bool _running = false; 
+
+
+    /* ----- Monobehaviour functions ----- */
+
+    void Start(){
         _currentDateTime = DateTime.Now.Date + TimeSpan.FromHours(_startTime);
         _skyboxRenderer = _skybox.GetComponent<MeshRenderer>();
+
+        GameManager.OnGameStateChanged += onGameStateChanged;
     }
 
     
-    void Update()
-    {
+    void Update(){
+        if (!_running) return;
         // Update the time
         _currentDateTime = _currentDateTime.AddSeconds(Time.deltaTime * _timeScale);
 
@@ -64,5 +70,11 @@ public class SkyManager : MonoBehaviour
         _light.intensity = Math.Clamp(sinValue, LIGHT_MIN_INTENSITY, LIGHT_MAX_INTENSITY);
 
         // TODO: Moon ?
+    }
+
+    /* ----- Custom functions ----- */
+
+    void onGameStateChanged(State newState){
+        if (newState.Is("BoatCutScene")) _running = true;
     }
 }
